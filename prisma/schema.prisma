@@ -1,0 +1,123 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model User {
+  id              String      @id @default(cuid())
+  name            String?
+  email           String?     @unique
+  emailVerified   DateTime?
+  username        String?     @unique
+  image           String?
+  bio             String?
+  shippingAddress String?
+  balance         BigInt?     @default(0)
+  accounts        Account[]
+  sessions        Session[]
+  items           Item[]
+  ratings         Rating[]
+  itemSelled      Purchase[]  @relation("buyer")
+  itemPurchased   Purchase[]  @relation("seller")
+  watchListItems  WatchList[]
+}
+
+model Item {
+  id              String      @id @default(cuid())
+  ownerId         String
+  owner           User        @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  title           String
+  description     String      @db.Text
+  price           BigInt
+  totalSupply     BigInt
+  availableSupply BigInt
+  listed          Boolean     @default(true)
+  image           String      @db.Text
+  category        String
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  ratings         Rating[]
+  purchases       Purchase[]
+  watchListItems  WatchList[]
+}
+
+model Rating {
+  id        String   @id @default(cuid())
+  itemId    String
+  item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  stars     Int
+  comment   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum StatusType {
+  PENDING
+  SHIPPED
+  DELIVERED
+}
+
+model Purchase {
+  id        String     @id @default(cuid())
+  itemId    String
+  item      Item       @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  buyerId   String
+  buyer     User       @relation("buyer", fields: [buyerId], references: [id])
+  sellerId  String
+  seller    User       @relation("seller", fields: [sellerId], references: [id])
+  quantity  Int
+  itemPrice Int
+  status    StatusType @default(PENDING)
+  txnDigest String
+}
+
+model WatchList {
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  itemId String
+  item   Item   @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@id([userId, itemId])
+}
