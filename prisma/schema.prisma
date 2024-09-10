@@ -114,10 +114,9 @@ model Purchase {
 }
 
 model WatchList {
+  id     String @id @default(cuid())
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   itemId String
   item   Item   @relation(fields: [itemId], references: [id], onDelete: Cascade)
-
-  @@id([userId, itemId])
 }
