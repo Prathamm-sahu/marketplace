@@ -1,7 +1,8 @@
 import { getAuthSession } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { convertStrToEnum } from "@/lib/utils";
 import { ItemValidator } from "@/lib/validators/item";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 export async function GET(req: NextRequest) {
@@ -19,8 +20,44 @@ export async function GET(req: NextRequest) {
     const search = queryParams.get("search")
     const category = queryParams.get("category")
     const sort = queryParams.get("sort")
+
+    if(category && sort) {
+      const categoryEnum = convertStrToEnum(category)
+
+      // Add sorting functionality
+
+      const items = await db.item.findMany({
+        where: {
+          category: categoryEnum
+        },
+      })
+
+      return NextResponse.json(items)
+    }
+
+    if(category && !sort) {
+      const categoryEnum = convertStrToEnum(category)
+
+      // Add sorting functionality
+
+      const items = await db.item.findMany({
+        where: {
+          category: categoryEnum
+        },
+      })
+
+      return NextResponse.json(items)
+    }
+
+    if(!category && sort) {
+      // add functionality
+    }
+
+    const items = await db.item.findMany({})
+
+    return NextResponse.json(items)
   } catch (error) {
-    
+    return new Response("Something went wrong", { status: 500 })
   }
 }
 
