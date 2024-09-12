@@ -7,6 +7,7 @@ import SearchBar from "./SearchBar";
 import { getAuthSession } from "@/lib/auth";
 import SignIn from "./SignIn";
 import Profile from "./Profile";
+import CreateItemListing from "../CreateItemListing";
 
 interface NavbarProps {}
 
@@ -42,7 +43,10 @@ const Navbar: FC<NavbarProps> = async ({}) => {
         {!session?.user ? (
           <SignIn />
         ) : (
-          <Profile session={session} />
+          <div className="flex space-x-2">
+            <CreateItemListing />
+            <Profile session={session} />
+          </div>
         )}
 
         <Button variant={"subtle"}>
