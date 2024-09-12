@@ -76,9 +76,9 @@ model Item {
   owner           User        @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   title           String
   description     String      @db.Text
-  price           BigInt
-  totalSupply     BigInt
-  availableSupply BigInt
+  price           Int
+  totalSupply     Int
+  availableSupply Int
   listed          Boolean     @default(true)
   image           String      @db.Text
   category        Category
