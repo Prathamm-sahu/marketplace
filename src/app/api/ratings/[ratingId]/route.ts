@@ -37,7 +37,7 @@ export async function PUT(
       return new Response("Unauthorized", { status: 403 });
     }
 
-    await db.rating.update({
+    await db.itemRating.update({
       where: {
         id: params.ratingId,
       },
@@ -64,7 +64,7 @@ export async function DELETE(
       return new Response("Unauthenticated", { status: 401 });
     }
 
-    await db.rating.delete({
+    await db.itemRating.delete({
       where: {
         id: params.ratingId,
         authorId: session?.user.id,

@@ -9,6 +9,9 @@ export async function GET(req: Request, { params }: { params: { id: string }}) {
     const item = await db.item.findFirst({
       where: {
         id: params.id
+      },
+      include: {
+        itemRatings: true
       }
     })
 

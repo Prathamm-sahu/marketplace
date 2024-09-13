@@ -1,6 +1,6 @@
 import { getAuthSession } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { convertStrToEnum } from "@/lib/utils";
+import { convertCategoryStrToEnum } from "@/lib/utils";
 import { ItemValidator } from "@/lib/validators/item";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
     const sort = queryParams.get("sort")
 
     if(category && sort) {
-      const categoryEnum = convertStrToEnum(category)
+      const categoryEnum = convertCategoryStrToEnum(category)
 
       // Add sorting functionality
 
@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
     }
 
     if(category && !sort) {
-      const categoryEnum = convertStrToEnum(category)
+      const categoryEnum = convertCategoryStrToEnum(category)
 
       // Add sorting functionality
 
@@ -49,14 +49,15 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(items)
     }
 
-    if(!category && sort) {
-      // add functionality
-    }
+    // if(!category && sort) {
+    //   // add functionality
+    // }
 
     const items = await db.item.findMany({})
 
     return NextResponse.json(items)
-  } catch (error) {
+  } catch (error: any) {
+    console.log(error.message)
     return new Response("Something went wrong", { status: 500 })
   }
 }
@@ -70,7 +71,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json()
-    const { title, description, price, image, listed, ownerId, totalSupply, availableSupply, category } = ItemValidator.parse(body)
+    const { title, description, price, image, listed, totalSupply, availableSupply, category } = ItemValidator.parse(body)
 
     await db.item.create({
       data: {
@@ -79,7 +80,7 @@ export async function POST(req: NextRequest) {
         price,
         image,
         listed,
-        ownerId,
+        ownerId: session.user.id,
         totalSupply,
         availableSupply,
         category
