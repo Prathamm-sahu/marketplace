@@ -10,26 +10,31 @@ export const categories = [
     title: "Collectibles & Art",
     href: "?category=collectiblesAndArt",
     description: "NFTs, trading cards and more",
+    value: "collectiblesAndArt",
   },
   {
     title: "Home & Garden",
     href: "?category=homeAndGarden",
     description: "Furniture, Kitchenware and more",
+    value: "homeAndGarden",
   },
   {
     title: "Toys and Games",
     href: "?category=toysAndGames",
     description: "Board games, video games and more",
+    value: "toysAndGames"
   },
   {
     title: "Electronics",
     href: "?category=electronics",
     description: "Computer phones and more",
+    value: "electronics"
   },
   {
     title: "Jewellry & Accessories",
     href: "?category=jewelryAndAccessories",
     description: "Watches, rings and more",
+    value: "jewelryAndAccessories"
   },
 ];
 
@@ -41,7 +46,7 @@ export enum categoryEnumValues {
   toysAndGames = "toysAndGames"
 }
 
-export const convertStrToEnum = (convertingStr: string) => {
+export const convertCategoryStrToEnum = (convertingStr: string) => {
   switch (convertingStr) {
     case "collectiblesAndArt":
         return categoryEnumValues.collectiblesAndArt;
@@ -55,6 +60,15 @@ export const convertStrToEnum = (convertingStr: string) => {
         return categoryEnumValues.toysAndGames;
     default:
         return categoryEnumValues.electronics;;
+  }
+}
+
+export const convertValueToCategory = (value: string) => {
+  const category = categories.find((category) => category.value === value)
+  if(!category) {
+    return null
+  }
+  return category
 }
 
 
