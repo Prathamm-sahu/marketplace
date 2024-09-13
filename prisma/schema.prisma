@@ -56,7 +56,7 @@ model User {
   accounts        Account[]
   sessions        Session[]
   items           Item[]
-  ratings         Rating[]
+  itemRatings     ItemRating[]
   itemSelled      Purchase[]  @relation("buyer")
   itemPurchased   Purchase[]  @relation("seller")
   watchListItems  WatchList[]
@@ -84,12 +84,12 @@ model Item {
   category        Category
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
-  ratings         Rating[]
+  itemRatings     ItemRating[]
   purchases       Purchase[]
   watchListItems  WatchList[]
 }
 
-model Rating {
+model ItemRating {
   id        String   @id @default(cuid())
   itemId    String
   item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
