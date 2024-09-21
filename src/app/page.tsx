@@ -66,6 +66,15 @@ export default function Home() {
     setSearch(searchParams);
   }, [searchParams]);
 
+  if((items?.length === 0 || items === undefined) && !isLoading) {
+    return (
+      <div className="flex flex-col justify-center items-center w-full h-96">
+        <AlertTriangle className="w-16 h-16 text-yellow-400" />
+        <span className="text-xl">No listings found</span>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen">
       <div className="flex items-center justify-between">
@@ -163,16 +172,16 @@ export default function Home() {
       ) : null }
 
       {/* No item found */}
-      {items?.length === 0 && !isLoading && (
+      {/* {items?.length === 0 && !isLoading && (
         <div className="flex flex-col justify-center items-center w-full h-96">
           <AlertTriangle className="w-16 h-16 text-yellow-400" />
           <span className="text-xl">No listings found</span>
         </div>
-      )}
+      )} */}
 
       {/* Displaying items */}
       {items?.length !== 0 && !isLoading && (
-        <div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 h-full">
           {items?.slice(pageSize * (pageNumber - 1), pageSize * pageNumber).map((item, index) => (
             <ItemCard item={item} key={index} />
           ))}
@@ -189,7 +198,7 @@ export default function Home() {
             </div>
           )}
           <span className="underline underline-offset-4">{pageNumber}</span>
-          {items!.length > pageNumber * pageSize && (
+          {items.length > pageNumber * pageSize && (
           <div
             className="flex flex-row justify-center items-center gap-4 cursor-pointer"
             onClick={() => setPageNumber(pageNumber + 1)}

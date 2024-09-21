@@ -6,11 +6,11 @@ export const ItemValidator = z.object({
   description: z.string(),
   price: z.number(),
   image: z.string(),
-  ownerId: z.string(),
+  ownerId: z.string().optional(),
   listed: z.boolean(),
   totalSupply: z.number(),
   availableSupply: z.number(),
-  category: z.string()
+  category: z.enum(["collectiblesAndArt", "electronics", "homeAndGarden", "jewelryAndAccessories", "toysAndGames"])
 })
 
 export type ItemType = z.infer<typeof ItemValidator>

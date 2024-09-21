@@ -63,12 +63,17 @@ export async function DELETE(req:NextRequest) {
       return new Response("Unauthenticated", { status: 401 })
     }
 
-    const body = await req.json()
-    const { id } = WatchListValidator.parse(body)
+    const itemId = req.nextUrl.searchParams.get("itemId")
+
+    if(!itemId) {
+      return new Response("Provide a valid itemId", { status: 400 })
+    }
+
+    
 
     await db.watchList.delete({
       where: {
-        id
+        id: itemId
       }
     })
 

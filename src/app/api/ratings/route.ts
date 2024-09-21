@@ -8,11 +8,14 @@ import { ZodError } from "zod";
 export async function GET(req: NextRequest) {
   try {
     const params = req.nextUrl.searchParams
-    const authorId = params.get("authorId")
+    const itemId = params.get("itemId")
 
-    const ratings = db.rating.findMany({
+    const ratings = await db.itemRating.findMany({
       where: {
-        authorId: authorId || ""
+        itemId: itemId || ""
+      },
+      include: {
+        author: true
       }
     })
 
@@ -42,7 +45,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const { itemId, authorId, stars, comment } = RatingValidator.parse(body)
 
-    await db.rating.create({
+    await db.itemRating.create({
       data: {
         itemId,
         authorId,
